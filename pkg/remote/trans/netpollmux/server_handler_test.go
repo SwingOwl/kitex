@@ -115,7 +115,7 @@ func TestOnActive(t *testing.T) {
 
 	ctx, err := svrTransHdlr.OnActive(ctx, conn)
 	test.Assert(t, err == nil, err)
-	muxSvrCon, _ := ctx.Value(ctxKeyMuxSvrConn{}).(*muxSvrConn)
+	muxSvrCon, _ := ctx.Value(ctxKeyMuxSvrConn{}).(*muxServerConn)
 	test.Assert(t, muxSvrCon != nil)
 	test.Assert(t, readTimeout == rwTimeout, readTimeout, rwTimeout)
 }
@@ -131,7 +131,7 @@ func TestMuxSvrWrite(t *testing.T) {
 		},
 	}
 	pool := &sync.Pool{}
-	muxSvrCon := newMuxSvrConn(npconn, pool)
+	muxSvrCon := newMuxServerConn(npconn, pool)
 	test.Assert(t, muxSvrCon != nil)
 
 	ctx := context.Background()
@@ -197,7 +197,7 @@ func TestMuxSvrOnRead(t *testing.T) {
 	}
 
 	pool := &sync.Pool{}
-	muxSvrCon := newMuxSvrConn(npconn, pool)
+	muxSvrCon := newMuxServerConn(npconn, pool)
 
 	var err error
 
@@ -213,7 +213,7 @@ func TestMuxSvrOnRead(t *testing.T) {
 
 	ctx, err = svrTransHdlr.OnActive(ctx, muxSvrCon)
 	test.Assert(t, err == nil, err)
-	muxSvrConFromCtx, _ := ctx.Value(ctxKeyMuxSvrConn{}).(*muxSvrConn)
+	muxSvrConFromCtx, _ := ctx.Value(ctxKeyMuxSvrConn{}).(*muxServerConn)
 	test.Assert(t, muxSvrConFromCtx != nil)
 
 	pl := remote.NewTransPipeline(svrTransHdlr)
@@ -284,7 +284,7 @@ func TestPanicAfterMuxSvrOnRead(t *testing.T) {
 	}
 
 	pool := &sync.Pool{}
-	muxSvrCon := newMuxSvrConn(conn, pool)
+	muxSvrCon := newMuxServerConn(conn, pool)
 
 	// 2. test
 	var err error
@@ -357,7 +357,7 @@ func TestRecoverAfterOnReadPanic(t *testing.T) {
 	}
 
 	pool := &sync.Pool{}
-	muxSvrCon := newMuxSvrConn(conn, pool)
+	muxSvrCon := newMuxServerConn(conn, pool)
 
 	svrTransHdlr, _ := NewSvrTransHandlerFactory().NewTransHandler(opt)
 
@@ -473,7 +473,7 @@ func TestInvokeError(t *testing.T) {
 			return ri
 		},
 	}
-	muxSvrCon := newMuxSvrConn(npconn, pool)
+	muxSvrCon := newMuxServerConn(npconn, pool)
 
 	var err error
 	ctx := context.Background()
@@ -491,7 +491,7 @@ func TestInvokeError(t *testing.T) {
 
 	ctx, err = svrTransHdlr.OnActive(ctx, muxSvrCon)
 	test.Assert(t, err == nil, err)
-	muxSvrCon, _ = ctx.Value(ctxKeyMuxSvrConn{}).(*muxSvrConn)
+	muxSvrCon, _ = ctx.Value(ctxKeyMuxSvrConn{}).(*muxServerConn)
 	test.Assert(t, muxSvrCon != nil)
 
 	pl := remote.NewTransPipeline(svrTransHdlr)
@@ -611,7 +611,7 @@ func TestInvokeNoMethod(t *testing.T) {
 	svrTransHdlr, _ := NewSvrTransHandlerFactory().NewTransHandler(opt)
 
 	pool := &sync.Pool{}
-	muxSvrCon := newMuxSvrConn(npconn, pool)
+	muxSvrCon := newMuxServerConn(npconn, pool)
 
 	var err error
 	ctx := context.Background()
@@ -629,7 +629,7 @@ func TestInvokeNoMethod(t *testing.T) {
 
 	ctx, err = svrTransHdlr.OnActive(ctx, muxSvrCon)
 	test.Assert(t, err == nil, err)
-	muxSvrCon, _ = ctx.Value(ctxKeyMuxSvrConn{}).(*muxSvrConn)
+	muxSvrCon, _ = ctx.Value(ctxKeyMuxSvrConn{}).(*muxServerConn)
 	test.Assert(t, muxSvrCon != nil)
 
 	pl := remote.NewTransPipeline(svrTransHdlr)
